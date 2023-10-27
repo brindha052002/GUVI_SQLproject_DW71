@@ -1,0 +1,114 @@
+1.Give the Country code from the order id column.
+
+select substring(`Order ID`, 1, 2) as country_code
+from superstore;
+
+----------------------------------------------------------------------------
+
+2.Get the top 5 profit from sales for each city wise.
+
+select city, sales, profit
+from (
+  select city, sales, profit,
+         rank() over (partition by city order by profit Desc) as profit_rank
+  from superstore
+) ranked_sales
+where profit_rank <= 5;
+
+----------------------------------------------------------------------------
+
+3.Extract the maximum values using row number function.
+
+select row_number()
+over(order by sales desc)
+as row_numbers, `Order ID`,sales
+from superstore;
+
+----------------------------------------------------------------------------
+
+4.remove duplicates from city , state.
+
+select distinct city, state
+from superstore;
+
+----------------------------------------------------------------------------
+
+5.Segment wise sales which is greater than 500.
+
+select  segment, sum(sales) as segment_wise_sales
+from superstore
+group by segment
+having segment_wise_sales > 500;
+
+----------------------------------------------------------------------------
+
+6.Category Sales 0 - 100 as low , 101 - 500 medium , 500 - 2000 as high , > 2000  as best.
+
+select  category, sum(sales) as total_sales,
+    case
+        when sum(sales) between 0 and 100 then 'low'
+        when sum(sales) between 101 and 500 then 'medium'
+        when sum(sales) between 501 and 2000 then 'high'
+        when sum(sales) > 2000 then 'best'
+    end as sales_category
+from superstore
+group by category;
+
+----------------------------------------------------------------------------
+
+7.city , region wise sum of sales , profits , count of sales & profits.
+
+select city, region,
+    sum(sales) as total_sales,
+    sum(profit) as total_profit,
+    count(sales) as sales_count,
+    count(profit) as profit_count
+from superstore
+group by city, region
+
+-----------------------------------------------------------------------------
+
+8.Select all the records belongs to region east & west with sales > 500.
+
+select *
+from superstore
+where (region = 'east' or region = 'west') and sales > 500;
+
+-----------------------------------------------------------------------------
+
+9.Create rank , dense rank by city and sales.
+
+select city, sales,
+rank() over (partition by city order by sales ) as rank_by_city,
+dense_rank() over (partition by city order by sales ) as dense_rank_by_city
+from superstore;
+
+-----------------------------------------------------------------------------
+
+10. describe about left , right , inner , self , cross joins & unions , subquries
+
+left Outer join:
+	A left outer join retrieves all records from the left table and the matched records from the right table.
+
+Right Outer join:
+	A right outer join is similar to a left outer join but retrieves all records from the right table and matched records from the left table.
+
+inner join:
+	An inner join obtains records that have matching values in both tables being joined.
+
+self join:
+	Joining a table by itself is known as self join.
+
+cross join:
+	In cross join a whole table will be merged with first records of the table and second record and it continues..
+
+Union:
+	The union operator is used to combine the result sets of two or more select statements into a single result set.
+
+Sub query:
+	A query which is written inside another query is known as sub query.
+
+------------------------------------------------------------------------------
+	
+	
+
